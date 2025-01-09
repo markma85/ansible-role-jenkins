@@ -4,4 +4,5 @@
   vars:
     jdk_version: openjdk-17
   roles:
-    - role: java
+    - role: base
+    # - role: java
