@@ -1,38 +1,75 @@
-Role Name
-=========
+# Role Name
 
-A brief description of the role goes here.
+This role manages the installation, configuration, and version control of Java Development Kits (JDK) on a target Ubuntu server. It ensures the expected JDK version is installed, removes incorrect versions, and verifies the installation.
 
-Requirements
-------------
+# Requirements
 
-Any pre-requisites that may not be covered by Ansible itself or the role should be mentioned here. For instance, if the role uses the EC2 module, it may be a good idea to mention in this section that the boto package is required.
+- Install a JDK on the remote host.
+- The `java` commands should be accessible globally.
 
-Role Variables
---------------
+# Role Variables
 
-A description of the settable variables for this role should go here, including any variables that are in defaults/main.yml, vars/main.yml, and any variables that can/should be set via parameters to the role. Any variables that are read from other roles and/or the global scope (ie. hostvars, group vars, etc.) should be mentioned here as well.
+The following variables can be customized:
 
-Dependencies
-------------
+- `jdk_version`: The expected JDK version to install (e.g., `openjdk-8`).
+- `java_jdk_versions`: A dictionary containing details of available JDK versions. Example structure:
+  ```yaml
+  java_jdk_versions:
+    openjdk-8:
+      version: "1.8.0"
+      package: "openjdk-8-jdk"
+    openjdk-11:
+      version: "11.0.0"
+      package: "openjdk-11-jdk"
+  ```
 
-A list of other roles hosted on Galaxy should go here, plus any details in regards to parameters that may need to be set for other roles, or variables that are used from other roles.
+# Dependencies
 
-Example Playbook
-----------------
+- The `base` role should be applied first if any OS-level configurations are required.
+- A live Ubuntu server instance with SSH access.
+- The `apt` package manager must be available on the target system.
 
-Including an example of how to use your role (for instance, with variables passed in as parameters) is always nice for users too:
+# Example Playbook
+An example playbook `java-playbook.yml`:
+```yaml
+- name: Configure Java
+  hosts: test
+  become: yes
+  vars:
+    jdk_version: openjdk-8
+    java_jdk_versions:
+      openjdk-8:
+        version: "1.8.0"
+        package: "openjdk-8-jdk"
+      openjdk-11:
+        version: "11.0.0"
+        package: "openjdk-11-jdk"
+  roles:
+    - role: java
+```
 
-    - hosts: servers
-      roles:
-         - { role: username.rolename, x: 42 }
+# Execute Playbook
 
-License
--------
+Run the playbook using the following command:
+```bash
+ansible-playbook -i inventory java-playbook.yml
+```
 
-BSD
+# How to Test
 
-Author Information
-------------------
+1. Navigate to the `roles/java/tests` folder
+    ```bash
+    cd roles/java/tests
+    ```
+2. Run the test playbook:
+    ```bash
+    ansible-playbook -i inventory test.yml
+    ```
 
-An optional section for the role authors to include contact information, or a website (HTML is not allowed).
+# License
+
+Apache 2.0
+
+# Author Information
+
+Mark
